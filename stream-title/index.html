@@ -103,6 +103,8 @@ body {
     <option value="rtl">Right → Left</option>
     <option value="ltr">Left → Right</option>
   </select>
+
+  <button id="resetBtn" style="margin-top:15px;width:100%;">Reset</button>
 </div>
 
 <script>
@@ -185,11 +187,9 @@ function applySettings() {
     const duration = 40 / speed;
 
     if (direction === "rtl") {
-      // Start just off the right edge, move left, exit off-screen
       document.documentElement.style.setProperty("--scroll-start", "100%");
       document.documentElement.style.setProperty("--scroll-end", "-100%");
     } else {
-      // Start just off the left edge, move right, exit off-screen
       document.documentElement.style.setProperty("--scroll-start", "-100%");
       document.documentElement.style.setProperty("--scroll-end", "100%");
     }
@@ -230,6 +230,22 @@ function updateUI(fontSize, wrap, scroll, speed, direction) {
   speedEl.value = speed;
   directionEl.value = direction;
 }
+
+/* --- RESET BUTTON --- */
+function resetSettings() {
+  const params = new URLSearchParams(location.search);
+
+  params.set("fontSize", 3.5);
+  params.set("wrap", "off");
+  params.set("scroll", "off");
+  params.set("speed", 10);
+  params.set("direction", "rtl");
+
+  history.replaceState({}, "", "?" + params.toString());
+  applySettings();
+}
+
+document.getElementById("resetBtn").onclick = resetSettings;
 
 /* --- SETTINGS EVENTS --- */
 document.getElementById("fontSize").oninput = e =>
