@@ -96,7 +96,7 @@ body {
   <input id="scroll" type="checkbox">
 
   <label>Scroll Speed</label>
-  <input id="speed" type="range" min="1" max="30">
+  <input id="speed" type="range" min="1" max="10">
 
   <label>Direction</label>
   <select id="direction">
@@ -167,7 +167,7 @@ function applySettings() {
   const fontSize = params.get("fontSize") || 3.5;
   const wrap = params.get("wrap") === "on";
   const scroll = params.get("scroll") === "on";
-  const speed = params.get("speed") || 10;
+  const speed = params.get("speed") || 3;
   const direction = params.get("direction") || "rtl";
 
   document.documentElement.style.setProperty("--font-size", fontSize + "em");
@@ -184,14 +184,14 @@ function applySettings() {
     marquee.className = "marquee";
     marquee.textContent = rawText;
 
-    const duration = 40 / speed;
+    const duration = 60 / speed;
 
     if (direction === "rtl") {
-      document.documentElement.style.setProperty("--scroll-start", "100%");
-      document.documentElement.style.setProperty("--scroll-end", "-100%");
+      document.documentElement.style.setProperty("--scroll-start", window.innerWidth + "px");
+      document.documentElement.style.setProperty("--scroll-end", -titleBox.scrollWidth + "px");
     } else {
-      document.documentElement.style.setProperty("--scroll-start", "-100%");
-      document.documentElement.style.setProperty("--scroll-end", "100%");
+      document.documentElement.style.setProperty("--scroll-start", -titleBox.scrollWidth + "px");
+      document.documentElement.style.setProperty("--scroll-end", window.innerWidth + "px");
     }
 
     marquee.style.animationDuration = duration + "s";
@@ -238,7 +238,7 @@ function resetSettings() {
   params.set("fontSize", 3.5);
   params.set("wrap", "off");
   params.set("scroll", "off");
-  params.set("speed", 10);
+  params.set("speed", 3);
   params.set("direction", "rtl");
 
   history.replaceState({}, "", "?" + params.toString());
