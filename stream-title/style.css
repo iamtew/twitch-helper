@@ -1,0 +1,76 @@
+@import url('https://fonts.cdnfonts.com/css/londrina-solid');
+
+body {
+  margin:0;
+  background:transparent;
+  font-family:'Londrina Solid', sans-serif;
+  color:#000;
+}
+
+/* --- TITLE DISPLAY --- */
+#titleBox {
+  position:fixed;
+  top:20px;
+  left:20px;
+  white-space:var(--wrap-mode, normal);
+  font-size:var(--font-size, 3.5em);
+  overflow:hidden;
+  color:var(--font-color, #000);
+  text-shadow:var(--combined-shadow, none);
+}
+
+/* --- MARQUEE --- */
+.marquee {
+  display:inline-block;
+  white-space:nowrap;
+  animation: scrollAnim linear infinite;
+  color:inherit;
+  text-shadow:var(--combined-shadow, none);
+}
+
+@keyframes scrollAnim {
+  from { transform: translateX(var(--scroll-start)); }
+  to   { transform: translateX(var(--scroll-end)); }
+}
+
+/* --- SETTINGS MENU --- */
+#settings {
+  position:fixed;
+  top:60px;
+  right:20px;
+  background:rgba(255,255,255,0.85);
+  padding:12px;
+  border-radius:8px;
+  font-size:16px;
+  color:#000;
+  width:240px;
+  font-family:sans-serif;
+}
+
+#settings label {
+  font-weight:bold;
+  display:block;
+  margin-top:10px;
+}
+
+#settings input[type=range],
+#settings input[type=color] {
+  width:100%;
+}
+
+/* --- MENU TOGGLE BUTTON --- */
+#menuToggle {
+  position:fixed;
+  top:20px;
+  right:20px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,0.9);
+  cursor:pointer;
+  font-size:18px;
+  line-height:32px;
+  text-align:center;
+  font-family:sans-serif;
+}
