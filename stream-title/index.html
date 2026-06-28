@@ -22,6 +22,8 @@ body {
   white-space:var(--wrap-mode, normal);
   font-size:var(--font-size, 3.5em);
   overflow:hidden;
+  color:var(--font-color, #000);
+  text-shadow:var(--outline-shadow, none);
 }
 
 /* --- MARQUEE --- */
@@ -29,6 +31,8 @@ body {
   display:inline-block;
   white-space:nowrap;
   animation: scrollAnim linear infinite;
+  color:inherit;
+  text-shadow:var(--outline-shadow, none);
 }
 
 @keyframes scrollAnim {
@@ -56,7 +60,8 @@ body {
   margin-top:10px;
 }
 
-#settings input[type=range] {
+#settings input[type=range],
+#settings input[type=color] {
   width:100%;
 }
 
@@ -88,6 +93,18 @@ body {
 <div id="settings" style="display:none;">
   <label>Font Size</label>
   <input id="fontSize" type="range" min="1" max="10" step="0.1">
+
+  <label>Font Color</label>
+  <input id="fontColor" type="color">
+
+  <label>Font Outline</label>
+  <input id="border" type="checkbox">
+
+  <label>Outline Color</label>
+  <input id="outlineColor" type="color">
+
+  <label>Outline Thickness</label>
+  <input id="borderThickness" type="range" min="1" max="20">
 
   <label>Wrap</label>
   <input id="wrap" type="checkbox">
@@ -165,16 +182,39 @@ function applySettings() {
   const params = new URLSearchParams(location.search);
 
   const fontSize = params.get("fontSize") || 3.5;
+  const fontColor = params.get("fontColor") || "#000000";
+
+  const border = params.get("border") === "on";
+  const outlineColor = params.get("outlineColor") || "#333333";
+  const borderThickness = params.get("borderThickness") || 4;
+
   const wrap = params.get("wrap") === "on";
   const scroll = params.get("scroll") === "on";
   const speed = params.get("speed") || 3;
   const direction = params.get("direction") || "rtl";
 
   document.documentElement.style.setProperty("--font-size", fontSize + "em");
+  document.documentElement.style.setProperty("--font-color", fontColor);
   document.documentElement.style.setProperty(
     "--wrap-mode",
     wrap ? "normal" : "nowrap"
   );
+
+  if (border) {
+    const t = borderThickness;
+    const c = outlineColor;
+
+    const shadow = `
+      -${t}px -${t}px ${c},
+       ${t}px -${t}px ${c},
+      -${t}px  ${t}px ${c},
+       ${t}px  ${t}px ${c}
+    `;
+
+    document.documentElement.style.setProperty("--outline-shadow", shadow);
+  } else {
+    document.documentElement.style.setProperty("--outline-shadow", "none");
+  }
 
   const titleBox = document.getElementById("titleBox");
   const rawText = titleBox.textContent;
@@ -201,7 +241,7 @@ function applySettings() {
     titleBox.textContent = rawText;
   }
 
-  updateUI(fontSize, wrap, scroll, speed, direction);
+  updateUI(fontSize, fontColor, border, outlineColor, borderThickness, wrap, scroll, speed, direction);
 }
 
 function updateURL(key, value) {
@@ -215,8 +255,12 @@ function updateURL(key, value) {
   }
 }
 
-function updateUI(fontSize, wrap, scroll, speed, direction) {
+function updateUI(fontSize, fontColor, border, outlineColor, borderThickness, wrap, scroll, speed, direction) {
   const fontSizeEl = document.getElementById("fontSize");
+  const fontColorEl = document.getElementById("fontColor");
+  const borderEl = document.getElementById("border");
+  const outlineColorEl = document.getElementById("outlineColor");
+  const borderThicknessEl = document.getElementById("borderThickness");
   const wrapEl = document.getElementById("wrap");
   const scrollEl = document.getElementById("scroll");
   const speedEl = document.getElementById("speed");
@@ -225,6 +269,10 @@ function updateUI(fontSize, wrap, scroll, speed, direction) {
   if (!fontSizeEl) return;
 
   fontSizeEl.value = fontSize;
+  fontColorEl.value = fontColor;
+  borderEl.checked = border;
+  outlineColorEl.value = outlineColor;
+  borderThicknessEl.value = borderThickness;
   wrapEl.checked = wrap;
   scrollEl.checked = scroll;
   speedEl.value = speed;
@@ -236,6 +284,10 @@ function resetSettings() {
   const params = new URLSearchParams(location.search);
 
   params.set("fontSize", 3.5);
+  params.set("fontColor", "#000000");
+  params.set("border", "off");
+  params.set("outlineColor", "#333333");
+  params.set("borderThickness", 4);
   params.set("wrap", "off");
   params.set("scroll", "off");
   params.set("speed", 3);
@@ -250,6 +302,18 @@ document.getElementById("resetBtn").onclick = resetSettings;
 /* --- SETTINGS EVENTS --- */
 document.getElementById("fontSize").oninput = e =>
   updateURL("fontSize", e.target.value);
+
+document.getElementById("fontColor").oninput = e =>
+  updateURL("fontColor", e.target.value);
+
+document.getElementById("border").onchange = e =>
+  updateURL("border", e.target.checked ? "on" : "off");
+
+document.getElementById("outlineColor").oninput = e =>
+  updateURL("outlineColor", e.target.value);
+
+document.getElementById("borderThickness").oninput = e =>
+  updateURL("borderThickness", e.target.value);
 
 document.getElementById("wrap").onchange = e =>
   updateURL("wrap", e.target.checked ? "on" : "off");
