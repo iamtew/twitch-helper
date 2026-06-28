@@ -141,13 +141,12 @@ function initMenuState() {
     return;
   }
 
-  // Show toggle button always when not disabled
   toggle.style.display = "block";
 
   if (menuState === "on") {
     settings.style.display = "block";
     toggle.textContent = "❌";
-  } else { // "off" or anything else
+  } else {
     settings.style.display = "none";
     toggle.textContent = "⭕";
   }
@@ -186,9 +185,11 @@ function applySettings() {
     const duration = 40 / speed;
 
     if (direction === "rtl") {
+      // Start just off the right edge, move left, exit off-screen
       document.documentElement.style.setProperty("--scroll-start", "100%");
       document.documentElement.style.setProperty("--scroll-end", "-100%");
     } else {
+      // Start just off the left edge, move right, exit off-screen
       document.documentElement.style.setProperty("--scroll-start", "-100%");
       document.documentElement.style.setProperty("--scroll-end", "100%");
     }
@@ -221,7 +222,7 @@ function updateUI(fontSize, wrap, scroll, speed, direction) {
   const speedEl = document.getElementById("speed");
   const directionEl = document.getElementById("direction");
 
-  if (!fontSizeEl) return; // menu may be disabled
+  if (!fontSizeEl) return;
 
   fontSizeEl.value = fontSize;
   wrapEl.checked = wrap;
